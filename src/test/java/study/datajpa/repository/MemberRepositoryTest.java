@@ -7,6 +7,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.domain.Member;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -21,6 +24,26 @@ class MemberRepositoryTest {
     public void testMember() {
         Member member = new Member("memberA");
         memberRepository.save(member);
+    }
 
+    @Test
+    public void basicCRUD() {
+        Member member1 = new Member("member1");
+        Member member2 = new Member("member2");
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        Member findMember = memberRepository.findById(member1.getId()).get();
+        assertThat(findMember).isEqualTo(member1);
+
+        List<Member> all = memberRepository.findAll();
+        assertThat(all.size()).isEqualTo(2);
+
+        long count = memberRepository.count();
+        assertThat(count).isEqualTo(2);
+
+        memberRepository.delete(member1);
+        long deleteCount = memberRepository.count();
+        assertThat(deleteCount).isEqualTo(1);
     }
 }
