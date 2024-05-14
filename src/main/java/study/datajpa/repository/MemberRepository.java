@@ -1,5 +1,7 @@
 package study.datajpa.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +25,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m where m.username in :usernames")
     public List<Member> findByUsernames(@Param("usernames") List<String> usernames); //IN절에 쓰이는 컬렉션 파라미터도 바인딩할 수 있다.
+
+    Page<Member> findPageByAge(int age, Pageable pageable);
 }

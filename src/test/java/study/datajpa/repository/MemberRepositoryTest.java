@@ -3,6 +3,9 @@ package study.datajpa.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.domain.Member;
@@ -140,5 +143,43 @@ class MemberRepositoryTest {
             System.out.println("member = " + member);
         }
         assertThat(find.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void paging() {
+        //given
+        Member m1 = new Member("m1", 10);
+        Member m2 = new Member("m2", 10);
+        Member m3 = new Member("m3", 15);
+        Member m4 = new Member("m4", 10);
+        Member m5 = new Member("m5", 10);
+        Member m6 = new Member("m6", 10);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+        memberRepository.save(m3);
+        memberRepository.save(m4);
+        memberRepository.save(m5);
+        memberRepository.save(m6);
+
+        int age = 10;
+        int offset = 0;
+        int limit = 3;
+
+        //when
+        PageRequest pageRequest = PageRequest.of(offset, limit, Sort.by(Sort.Direction.DESC, "username")); //username으로 내림차순 정렬
+        Page<Member> page = memberRepository.findPageByAge(age, pageRequest); //반환타입이 Page면 totalCount쿼리도 같이 나간다.\
+        Page<MemberDto> pageDto = page.map(member -> new MemberDto(member.getId(), member.getUsername(), null));
+
+        //then
+        for (Member member : page) {
+            System.out.println("member = " + member);
+        }
+        assertThat(page.getContent().size()).isEqualTo(3);
+        assertThat(page.getTotalElements()).isEqualTo(5);
+        assertThat(page.hasNext()).isTrue();
+
+        for (MemberDto memberDto : pageDto) {
+            System.out.println("memberDto = " + memberDto);
+        }
     }
 }
