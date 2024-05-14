@@ -9,6 +9,7 @@ import study.datajpa.domain.Member;
 import study.datajpa.domain.MemberDto;
 import study.datajpa.domain.Team;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -111,5 +112,33 @@ class MemberRepositoryTest {
         for (MemberDto dto : dtos) {
             System.out.println("dto = " + dto);
         }
+    }
+
+    @Test
+    public void collectionParam() {
+        //given
+        Team t1 = new Team("t1");
+        Team t2 = new Team("t2");
+        teamRepository.save(t1);
+        teamRepository.save(t2);
+
+        Member m1 = new Member("m1", 10, t1);
+        Member m2 = new Member("m2", 10, t1);
+        Member m3 = new Member("m3", 15, t2);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+        memberRepository.save(m3);
+
+        //when
+        List<String> usernames = new ArrayList<>();
+        usernames.add("m1");
+        usernames.add("m2");
+        List<Member> find = memberRepository.findByUsernames(usernames);
+
+        //then
+        for (Member member : find) {
+            System.out.println("member = " + member);
+        }
+        assertThat(find.size()).isEqualTo(2);
     }
 }
