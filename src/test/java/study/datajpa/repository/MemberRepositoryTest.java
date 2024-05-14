@@ -240,4 +240,18 @@ class MemberRepositoryTest {
             member.getTeam().getName();
         }
     }
+
+    @Test
+    public void queryHint() {
+        //given
+        memberRepository.save(new Member("m1",10));
+        em.flush();
+        em.clear();
+
+        //when
+        Member member = memberRepository.findReadOnlyByUsername("m1");
+        member.setUsername("m2");
+
+        em.flush(); //readOnly라서 업데이트 쿼리가 나가지 않는다.
+    }
 }
