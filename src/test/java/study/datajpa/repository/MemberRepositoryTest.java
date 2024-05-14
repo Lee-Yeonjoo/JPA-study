@@ -1,5 +1,7 @@
 package study.datajpa.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,7 @@ import study.datajpa.domain.Team;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +29,8 @@ class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired TeamRepository teamRepository;
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     public void testMember() {
@@ -181,5 +186,33 @@ class MemberRepositoryTest {
         for (MemberDto memberDto : pageDto) {
             System.out.println("memberDto = " + memberDto);
         }
+    }
+
+    @Test
+    public void bulkUpdate() throws Exception{
+        //given
+        Member m1 = new Member("m1", 10);
+        Member m2 = new Member("m2", 15);
+        Member m3 = new Member("m3", 19);
+        Member m4 = new Member("m4", 20);
+        Member m5 = new Member("m5", 24);
+        Member m6 = new Member("m6", 28);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+        memberRepository.save(m3);
+        memberRepository.save(m4);
+        memberRepository.save(m5);
+        memberRepository.save(m6);
+
+        //when
+        int count = memberRepository.bulkAgePlus(20);
+        em.flush();
+        em.clear(); //벌크연산 후에 영속성 컨텍스트를 날려야 한다. -> 다시 업데이트된 db의 내용을 조회하도록 or @Modifying의 clearAutomatically = true 옵션 설정.
+
+        //then
+        assertThat(count).isEqualTo(3);
+
+        Optional<Member> findMember = memberRepository.findById(m4.getId());
+        System.out.println("findMember = " + findMember);
     }
 }

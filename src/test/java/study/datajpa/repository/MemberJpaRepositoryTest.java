@@ -76,4 +76,27 @@ class MemberJpaRepositoryTest {
         assertThat(page.size()).isEqualTo(3);
         assertThat(totalCount).isEqualTo(5);
     }
+
+    @Test
+    public void bulkUpdate() throws Exception{
+        //given
+        Member m1 = new Member("m1", 10);
+        Member m2 = new Member("m2", 15);
+        Member m3 = new Member("m3", 19);
+        Member m4 = new Member("m4", 20);
+        Member m5 = new Member("m5", 21);
+        Member m6 = new Member("m6", 28);
+        memberJpaRepository.save(m1);
+        memberJpaRepository.save(m2);
+        memberJpaRepository.save(m3);
+        memberJpaRepository.save(m4);
+        memberJpaRepository.save(m5);
+        memberJpaRepository.save(m6);
+
+        //when
+        int count = memberJpaRepository.bulkAgePlus(20);
+
+        //then
+        assertThat(count).isEqualTo(3);
+    }
 }

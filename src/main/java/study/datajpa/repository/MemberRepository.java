@@ -3,6 +3,7 @@ package study.datajpa.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import study.datajpa.domain.Member;
@@ -27,4 +28,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     public List<Member> findByUsernames(@Param("usernames") List<String> usernames); //IN절에 쓰이는 컬렉션 파라미터도 바인딩할 수 있다.
 
     Page<Member> findPageByAge(int age, Pageable pageable);
+
+    @Modifying(clearAutomatically = true) //이걸 써줘야 update쿼리가 나간다. 해당 옵션을 true로 해야 벌크연산 후 영속성 컨텍스트가 초기화됨.
+    @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
+    public int bulkAgePlus(@Param("age") int age);
 }
