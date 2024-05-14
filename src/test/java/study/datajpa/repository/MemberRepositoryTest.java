@@ -215,4 +215,29 @@ class MemberRepositoryTest {
         Optional<Member> findMember = memberRepository.findById(m4.getId());
         System.out.println("findMember = " + findMember);
     }
+
+    @Test
+    public void entityGraph() {
+        //given
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member m1 = new Member("m1", 10, teamA);
+        Member m2 = new Member("m2", 20, teamB);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        List<Member> members = memberRepository.findAll(); //페치조인됨
+
+        //then
+        for (Member member : members) {
+            member.getTeam().getName();
+        }
+    }
 }

@@ -1,11 +1,14 @@
 package study.datajpa.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.domain.Member;
+import study.datajpa.domain.Team;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MemberJpaRepositoryTest {
 
     @Autowired MemberJpaRepository memberJpaRepository;
+    @Autowired TeamJpaRepository teamJpaRepository;
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     public void testMember() {
@@ -98,5 +104,31 @@ class MemberJpaRepositoryTest {
 
         //then
         assertThat(count).isEqualTo(3);
+    }
+
+    @Test
+    public void findLazy() {
+        //given
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamJpaRepository.save(teamA);
+        teamJpaRepository.save(teamB);
+
+        Member m1 = new Member("m1", 10, teamA);
+        Member m2 = new Member("m2", 20, teamB);
+        memberJpaRepository.save(m1);
+        memberJpaRepository.save(m2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        List<Member> members = memberJpaRepository.findAll();
+
+        //then
+        for (Member member : members) {
+            member.getTeam().getName();
+        }
+
     }
 }
