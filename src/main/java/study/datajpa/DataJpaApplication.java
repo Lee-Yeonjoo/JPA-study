@@ -1,17 +1,25 @@
 package study.datajpa;
 
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.stereotype.Component;
+import study.datajpa.domain.Member;
+import study.datajpa.repository.MemberRepository;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@RequiredArgsConstructor
 public class DataJpaApplication {
+
+	private final MemberRepository memberRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DataJpaApplication.class, args);
