@@ -254,4 +254,30 @@ class MemberRepositoryTest {
 
         em.flush(); //readOnly라서 업데이트 쿼리가 나가지 않는다.
     }
+
+    @Test
+    public void repositoryCustom() {
+        //given
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member m1 = new Member("m1", 10, teamA);
+        Member m2 = new Member("m2", 20, teamB);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        List<Member> members = memberRepository.findMemberCustom();
+
+        //then
+        assertThat(members.size()).isEqualTo(2);
+        for (Member member : members) {
+            System.out.println("member = " + member);
+        }
+    }
 }
