@@ -6,7 +6,7 @@ import study.datajpa.domain.Member;
 
 import java.util.List;
 
-public class MemberRepositoryImpl implements MemberRepositoryCustom {
+public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     @Autowired
     EntityManager em;
