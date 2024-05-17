@@ -47,7 +47,7 @@ public class MemberController {
         return page.map(member -> new MemberDto(member.getId(), member.getUsername(), member.getTeam().getName()));
     }
 
-    @PostConstruct
+    /*@PostConstruct
     public void init() {
         Team team1 = new Team("t1");
         Team team2 = new Team("t2");
@@ -64,5 +64,5 @@ public class MemberController {
         memberRepository.save(member3);
         memberRepository.save(member4);
         memberRepository.save(member5);
-    }
+    }*/
 }
