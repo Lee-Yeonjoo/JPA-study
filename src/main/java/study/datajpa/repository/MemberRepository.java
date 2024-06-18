@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import study.datajpa.domain.Member;
 import study.datajpa.domain.MemberDto;
+import study.datajpa.domain.Team;
 
 import java.util.List;
 
@@ -61,4 +62,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Query(value = "select m.member_id as id, m.username, t.name as teamName from member m left join team t on m.team_id = t.team_id",
             countQuery = "select count(*) from member", nativeQuery = true)
     Page<MemberProjection> findByNativeProjection(Pageable pageable);
+
+    //졸프 관련
+    List<Member> findAllByTeam(Team team);
+
+    List<Member> findAllByTeamId(Long teamId);
 }

@@ -356,4 +356,65 @@ class MemberRepositoryTest {
             System.out.println("memberProjection = " + memberProjection.getUsername());
         }
     }
+
+    //졸프관련 - team에서 memberList를 조회할 때 쿼리가 어떻게 나가는지 테스트
+    @Test
+    public void teamTest() {
+        //given
+        Team teamA = new Team("teamA");
+        teamRepository.save(teamA);
+
+        Member m1 = new Member("m1", 10);
+        m1.changeTeam(teamA);
+        Member m2 = new Member("m2", 20);
+        m2.changeTeam(teamA);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        Team team = teamRepository.findById(teamA.getId()).get();
+
+        //then
+        for (Member m: team.getMembers() ) {
+            System.out.println("m = " + m);
+        }
+    }
+
+    //졸프 관련 - postId로 조회랑 post로 조회가 동일하게 작동하는지
+    @Test
+    public void readByIdOrEntity() {
+        //given
+        Team teamA = new Team("teamA");
+        teamRepository.save(teamA);
+
+        Member m1 = new Member("m1", 10);
+        m1.changeTeam(teamA);
+        Member m2 = new Member("m2", 20);
+        m2.changeTeam(teamA);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        /*Team team = teamRepository.findById(teamA.getId()).get(); //팀 select 쿼리
+        List<Member> members = memberRepository.findAllByTeam(team); //where문의 팀 아이디로 조회하는 쿼리*/
+
+        List<Member> members2 = memberRepository.findAllByTeamId(teamA.getId()); //팀 아이디로 조회 - join이 일어남 왜지??
+
+        //then
+        /*System.out.println("팀 엔티티로 조회한 경우");
+        for (Member member : members) {
+            System.out.println("member = " + member);
+        }*/
+
+        System.out.println("팀 아이디로 조회한 경우");
+        for (Member member : members2) {
+            System.out.println("member = " + member);
+        }
+    }
 }

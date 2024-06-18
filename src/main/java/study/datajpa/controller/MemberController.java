@@ -65,4 +65,5 @@ public class MemberController {
         memberRepository.save(member4);
         memberRepository.save(member5);
     }*/
+
 }

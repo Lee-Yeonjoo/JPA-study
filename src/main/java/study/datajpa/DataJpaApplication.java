@@ -9,7 +9,9 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Component;
 import study.datajpa.domain.Member;
+import study.datajpa.domain.Team;
 import study.datajpa.repository.MemberRepository;
+import study.datajpa.repository.TeamRepository;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -21,9 +23,7 @@ public class DataJpaApplication {
 
 	private final MemberRepository memberRepository;
 
-	public static void main(String[] args) {
-		SpringApplication.run(DataJpaApplication.class, args);
-	}
+	public static void main(String[] args) {SpringApplication.run(DataJpaApplication.class, args);}
 
 	@Bean
 	public AuditorAware<String> auditorProvider() {
